@@ -9,7 +9,6 @@ import {
 import * as configuration from '../knexDb/knexfile';
 import knex from 'knex';
 import logger from '../utils/logger';
-import build from 'next/dist/build';
 const connection = knex(configuration);
 
 export const createUser = async ({

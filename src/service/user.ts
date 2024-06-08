@@ -1,8 +1,7 @@
 import { createUserTs, getUserTs } from '../interface';
-import { generateToken } from '../utils/jwtToke';
+import { generateToken } from '../utils/jwtToken';
 import logger from '../utils/logger';
 import { hashPassword, verifyPassword } from '../utils/passwordEncription';
-import { v4 as uuidv4 } from 'uuid';
 import * as modelUser from '../models/user';
 import { error } from 'winston';
 

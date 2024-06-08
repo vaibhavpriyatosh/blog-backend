@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import logger from '../utils/logger';
-// import * as servicePost from '../service/post';
+import * as servicePost from '../service/post';
 
 const createPost = async (
 	req: Request,
@@ -9,9 +9,9 @@ const createPost = async (
 	try {
 		let {
 			body: { text, image, hashTags },
+			user: { id },
 		} = req;
 
-		console.log({ text, image, hashTags });
 		//basic params check
 		if (
 			(hashTags && !Array.isArray(hashTags)) ||
@@ -20,8 +20,7 @@ const createPost = async (
 			throw new Error('Wrong params');
 		}
 
-		const result = { ok: true, data: {} };
-		// await serviceUser.createUser({ mobile, email, password });
+		const result = await servicePost.createPost({ text, image, hashTags, id });
 
 		if (result?.ok && result?.ok) {
 			return res.status(200).json({ ok: true, data: result?.data });

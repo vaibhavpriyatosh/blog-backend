@@ -33,3 +33,13 @@ export interface returnById {
 	email: string;
 	mobile: string;
 }
+
+export interface createPostTs {
+	text?: string;
+	image?: string;
+	hashTags?: string;
+}
+
+export interface modelPostTs extends createPostTs {
+	id: number;
+}

@@ -8,13 +8,13 @@ const createUser = async (
 ): Promise<Express.Response> => {
 	try {
 		let {
-			body: { mobile, email, password },
+			body: { mobile, email, password, name },
 		} = req;
 
 		mobile = Number(mobile);
 
 		//basic params check
-		if (isNaN(Number(mobile)) || !email || !password) {
+		if (isNaN(Number(mobile)) || !email || !password || !name) {
 			throw new Error('Wrong params');
 		}
 
@@ -23,7 +23,12 @@ const createUser = async (
 			throw new Error('Wrong Email Type');
 		}
 
-		const result = await serviceUser.createUser({ mobile, email, password });
+		const result = await serviceUser.createUser({
+			mobile,
+			email,
+			password,
+			name,
+		});
 
 		if (result?.ok && result?.ok) {
 			return res.status(200).json({ ok: true, data: result?.data });
@@ -72,4 +77,34 @@ const getUser = async (
 	}
 };
 
-export { createUser, getUser };
+const getUserByName = async (
+	req: Request,
+	res: Response
+): Promise<Express.Response> => {
+	try {
+		let {
+			query: { searchText, page = 1, pageSize = 10 },
+		} = req;
+
+		page = Number(page);
+		pageSize = Number(pageSize);
+		searchText = searchText?.toString();
+
+		const result = await serviceUser.getUserByName({
+			searchText,
+			page,
+			pageSize,
+		});
+
+		if (result?.ok && result?.ok) {
+			return res.status(200).json({ ok: true, data: result?.data });
+		} else {
+			throw new Error('Something went wrong');
+		}
+	} catch (error) {
+		logger.error(`user : controller : error : ${error}`);
+		return res.status(401).json({ ok: false, error });
+	}
+};
+
+export { createUser, getUser, getUserByName };

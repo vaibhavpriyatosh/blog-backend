@@ -9,7 +9,7 @@ const createPost = async (
 	try {
 		let {
 			body: { text, image, hashTags },
-			user: { id },
+			user: { id: userId },
 		} = req;
 
 		//basic params check
@@ -20,7 +20,12 @@ const createPost = async (
 			throw new Error('Wrong params');
 		}
 
-		const result = await servicePost.createPost({ text, image, hashTags, id });
+		const result = await servicePost.createPost({
+			text,
+			image,
+			hashTags,
+			userId,
+		});
 
 		if (result?.ok && result?.ok) {
 			return res.status(200).json({ ok: true, data: result?.data });
@@ -33,41 +38,42 @@ const createPost = async (
 	}
 };
 
-// const getUser = async (
-// 	req: Request,
-// 	res: Response
-// ): Promise<Express.Response> => {
-// 	try {
-// 		let {
-// 			body: { mobile, email, password },
-// 		} = req;
+const updatePost = async (
+	req: Request,
+	res: Response
+): Promise<Express.Response> => {
+	try {
+		let {
+			body: { text, image, hashTags, id },
+			user: { id: userId },
+		} = req;
 
-// 		mobile = Number(mobile);
+		//basic params check
+		if (
+			(hashTags && !Array.isArray(hashTags)) ||
+			(!text && !image && !hashTags) ||
+			!id
+		) {
+			throw new Error('Wrong params');
+		}
 
-// 		//basic params check
-// 		if ((isNaN(Number(mobile)) || !email) && !password) {
-// 			throw new Error('Wrong params');
-// 		}
+		const result = await servicePost.updatePost({
+			text,
+			image,
+			hashTags,
+			id,
+			userId,
+		});
 
-// 		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// 		if (email && !emailPattern.test(email)) {
-// 			throw new Error('Wrong Email Type');
-// 		}
-
-// 		const result = await serviceUser.getUser({ mobile, email, password });
-
-// 		if (result?.ok && result?.ok) {
-// 			return res.status(200).json({ ok: true, data: result?.data });
-// 		} else {
-// 			throw new Error('Something went wrong');
-// 		}
-// 	} catch (error) {
-// 		logger.error(`user : controller : get : ${error}`);
-// 		return res.status(200).json({ ok: false, error });
-// 	}
-// };
-
-export {
-	createPost,
-	//  getUser
+		if (result?.ok && result?.ok) {
+			return res.status(200).json({ ok: true, data: result?.data });
+		} else {
+			throw new Error('Something went wrong');
+		}
+	} catch (error) {
+		logger.error(`user : controller : create : ${error}`);
+		return res.status(200).json({ ok: false, error });
+	}
 };
+
+export { createPost, updatePost };

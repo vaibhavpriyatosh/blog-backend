@@ -9,6 +9,11 @@ router.get('/', (_req, res) => res.send('ROAM AROUND'));
 
 router.route('/user').post(userContoller.createUser).get(userContoller.getUser);
 
-router.route('/post').post(authentication, postContoller.createPost);
+router.get('/user/get-by-name', authentication, userContoller.getUserByName);
+
+router
+	.route('/post')
+	.post(authentication, postContoller.createPost)
+	.put(authentication, postContoller.updatePost);
 
 export default router;

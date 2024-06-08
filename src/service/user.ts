@@ -1,19 +1,20 @@
-import { createUserTs, getUserTs } from '../interface';
+import { createUserTs, getUserTs, searchTextLimitTs } from '../interface';
 import { generateToken } from '../utils/jwtToken';
 import logger from '../utils/logger';
 import { hashPassword, verifyPassword } from '../utils/passwordEncription';
 import * as modelUser from '../models/user';
 import { error } from 'winston';
 
-const createUser = async ({ mobile, email, password }: createUserTs) => {
+const createUser = async ({ mobile, email, password, name }: createUserTs) => {
 	try {
 		const securePassword = await hashPassword(password);
 		const result = await modelUser.createUser({
+			name,
 			mobile,
 			email,
 			password: securePassword,
 		});
-		console.log({ result });
+
 		const id = result[0]?.id;
 		const token = generateToken({ id });
 
@@ -51,4 +52,27 @@ const getUser = async ({ mobile, email, password }: getUserTs) => {
 	}
 };
 
-export { createUser, getUser };
+const getUserByName = async ({
+	searchText,
+	page,
+	pageSize,
+}: searchTextLimitTs) => {
+	try {
+		const result = await modelUser.getUserByName({
+			searchText,
+			page,
+			pageSize,
+		});
+
+		if (!result) {
+			throw new Error('Not found');
+		}
+
+		return { ok: true, data: { ...result } };
+	} catch (e) {
+		logger.error(`user : service : get-user-by-name : ${e}`);
+		throw e;
+	}
+};
+
+export { createUser, getUser, getUserByName };

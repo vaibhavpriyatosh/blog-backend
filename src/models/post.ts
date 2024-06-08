@@ -23,7 +23,7 @@ export const createPost = async ({
 			.returning('id');
 		return result;
 	} catch (error: any) {
-		logger.error(`user : service : create : ${error}`);
+		logger.error(`post : model : create : ${error}`);
 		throw error?.constraint ?? 'Something Went Wrong!!';
 	}
 };
@@ -47,7 +47,7 @@ export const updatePost = async ({
 			.andWhere('created_by', userId);
 		return result;
 	} catch (error: any) {
-		logger.error(`user : service : create : ${error}`);
+		logger.error(`post : model : update : ${error}`);
 		throw error?.constraint ?? 'Something Went Wrong!!';
 	}
 };

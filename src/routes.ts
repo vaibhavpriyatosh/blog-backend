@@ -7,9 +7,18 @@ const router = express.Router();
 
 router.get('/', (_req, res) => res.send('ROAM AROUND'));
 
-router.route('/user').post(userContoller.createUser).get(userContoller.getUser);
+router
+	.route('/user')
+	.post(userContoller.createUser)
+	.put(authentication, userContoller.updateUser)
+	.get(userContoller.getUser);
 
 router.get('/user/get-by-name', authentication, userContoller.getUserByName);
+router.post(
+	'/user/follow-list',
+	authentication,
+	userContoller.createUserFollow
+);
 
 router
 	.route('/post')

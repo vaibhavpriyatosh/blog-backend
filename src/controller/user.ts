@@ -41,6 +41,72 @@ const createUser = async (
 	}
 };
 
+const updateUser = async (
+	req: Request,
+	res: Response
+): Promise<Express.Response> => {
+	try {
+		let {
+			body: { mobile, email, password, name },
+			user: { id: userId },
+		} = req;
+
+		mobile = mobile ? Number(mobile) : null;
+
+		//basic params check
+
+		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (email && !emailPattern.test(email)) {
+			throw new Error('Wrong Email Type');
+		}
+
+		const result = await serviceUser.updateUser({
+			mobile,
+			email,
+			password,
+			name,
+			userId,
+		});
+
+		if (result?.ok && result?.data) {
+			return res.status(200).json({ ok: true, data: result?.data });
+		} else {
+			throw new Error('Something went wrong');
+		}
+	} catch (error) {
+		logger.error(`user : controller : error : ${error}`);
+		return res.status(200).json({ ok: false, error });
+	}
+};
+
+const createUserFollow = async (
+	req: Request,
+	res: Response
+): Promise<Express.Response> => {
+	try {
+		let {
+			body: { userList },
+			user: { id: userId },
+		} = req;
+
+		//basic params check
+
+		if (!userList || !Array.isArray(userList) || userList?.length === 0) {
+			throw new Error('Wrong Params');
+		}
+
+		const result = await serviceUser.createFollowLIst({ userList, userId });
+
+		if (result?.ok && result?.data) {
+			return res.status(200).json({ ok: true, data: result?.data });
+		} else {
+			throw new Error('Something went wrong');
+		}
+	} catch (error) {
+		logger.error(`user : controller : error : ${error}`);
+		return res.status(200).json({ ok: false, error });
+	}
+};
 const getUser = async (
 	req: Request,
 	res: Response
@@ -107,4 +173,4 @@ const getUserByName = async (
 	}
 };
 
-export { createUser, getUser, getUserByName };
+export { createUser, getUser, getUserByName, updateUser, createUserFollow };

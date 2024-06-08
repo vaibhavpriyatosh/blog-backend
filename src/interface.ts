@@ -5,6 +5,10 @@ export interface createUserTs {
 	password: string;
 }
 
+export interface updateUsersTs extends createUserTs {
+	userId: number;
+}
+
 export interface checkUserTs {
 	email?: string;
 	mobile?: string;
@@ -18,6 +22,14 @@ export interface getUserModel {
 
 export interface getUserTs extends getUserModel {
 	password: string;
+}
+
+export interface updateUserTs {
+	email?: string;
+	mobile?: string;
+	password?: string;
+	userId?: number;
+	name?: string;
 }
 
 export interface returnUserByNameOrPhoneNumber {
@@ -65,4 +77,19 @@ export interface modelPostTs extends createPostTs {
 
 export interface modelupdatePostTs extends modelPostTs {
 	id: number;
+}
+
+export interface modelCreateLikeTs {
+	count: number;
+	postId: number;
+}
+
+export interface modelCreateFollowListTs {
+	fromUser: number;
+	toUser: number;
+}
+
+export interface createFollowerList {
+	userList: number[];
+	userId: number;
 }

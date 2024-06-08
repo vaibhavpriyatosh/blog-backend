@@ -8,6 +8,8 @@ import {
 	returnUserByNameOrPhoneNumber,
 	searchTextLimitTs,
 	returnByNameC,
+	updateUsersTs,
+	updateUserTs,
 } from '../interface';
 import * as configuration from '../knexDb/knexfile';
 import knex from 'knex';
@@ -32,7 +34,39 @@ export const createUser = async ({
 			.returning('id');
 		return result;
 	} catch (error: any) {
-		logger.error(`user : service : create : ${error}`);
+		logger.error(`user : model : create : ${error}`);
+		throw error?.constraint ?? 'Something Went Wrong!!';
+	}
+};
+
+export const updateUser = async ({
+	name,
+	mobile,
+	email,
+	password,
+	userId,
+}: updateUserTs): Promise<returnId[]> => {
+	try {
+		const query = connection('user')
+			.update({ updated_at: 'now()' })
+			.where('id', userId)
+			.returning('id');
+		if (name) {
+			query.update({ name });
+		}
+		if (mobile) {
+			query.update({ mobile });
+		}
+		if (email) {
+			query.update({ email });
+		}
+		if (password) {
+			query.update({ password });
+		}
+		const result = await query;
+		return result;
+	} catch (error: any) {
+		logger.error(`user : model : update : ${error}`);
 		throw error?.constraint ?? 'Something Went Wrong!!';
 	}
 };
@@ -57,7 +91,7 @@ export const getUser = async ({
 		const result = await query;
 		return result;
 	} catch (error: any) {
-		logger.error(`user : service : create : ${error}`);
+		logger.error(`user : model : get : ${error}`);
 		throw error?.constraint ?? 'Something Went Wrong!!';
 	}
 };
@@ -83,7 +117,7 @@ export const getUserByName = async ({
 		const result = await query;
 		return { result, total_count: Number(total_count?.count) ?? 0 };
 	} catch (error: any) {
-		logger.error(`user : service : create : ${error}`);
+		logger.error(`user : model : get-user-name : ${error}`);
 		throw error?.constraint ?? 'Something Went Wrong!!';
 	}
 };
@@ -103,7 +137,7 @@ export const getUserById = async ({
 		const result = await query;
 		return result;
 	} catch (error: any) {
-		logger.error(`user : service : get-user : ${error}`);
+		logger.error(`user : model : get-user-byId : ${error}`);
 		throw error?.constraint ?? 'Something Went Wrong!!';
 	}
 };

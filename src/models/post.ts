@@ -1,4 +1,9 @@
-import { modelPostTs, modelupdatePostTs, returnId } from '../interface';
+import {
+	getPostTs,
+	modelPostTs,
+	modelupdatePostTs,
+	returnId,
+} from '../interface';
 import * as configuration from '../knexDb/knexfile';
 import knex from 'knex';
 import logger from '../utils/logger';
@@ -34,7 +39,7 @@ export const updatePost = async ({
 	hashTags,
 	id,
 	userId,
-}: modelupdatePostTs): Promise<any> => {
+}: modelupdatePostTs): Promise<number> => {
 	try {
 		const result = await connection('post')
 			.update({
@@ -68,7 +73,7 @@ export const getPost = async ({
 					userId
 				);
 			})
-			.where('is_deleted', false)
+			.where('p.is_deleted', false)
 			.orderByRaw(
 				'CASE WHEN fl.to_user IS NOT NULL THEN 0 ELSE 1 END, p.created_at DESC'
 			);

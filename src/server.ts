@@ -4,6 +4,7 @@ import config from 'config';
 import db from './knexDb/db';
 import routes from './routes';
 import logger from './utils/logger';
+import { checkRedisConnection } from './redisDb/redisDb';
 
 dotenv.config();
 const app = express();
@@ -23,5 +24,6 @@ app.use(express.json());
 app.use(routes);
 
 app.listen(port, () => {
+	checkRedisConnection();
 	logger.info(`Server is running on http://localhost:${port}`);
 });

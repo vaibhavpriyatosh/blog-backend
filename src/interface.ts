@@ -100,3 +100,17 @@ export interface viewLikeTs {
 	likeViewList: { postId: number; isLiked: boolean; isViewed: boolean }[];
 	userId: number;
 }
+
+export interface getPostTs {
+	userId: number;
+	searchText: string;
+	page: number;
+	pageSize: number;
+}
+
+export interface createCommentTs {
+	postId: number;
+	userId: number;
+	parentId?: number;
+	content: string;
+}

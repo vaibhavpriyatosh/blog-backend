@@ -2,7 +2,7 @@ import { modelPostTs, modelupdatePostTs, returnId } from '../interface';
 import logger from '../utils/logger';
 import * as modelPost from '../models/post';
 
-import * as modelLike from '../models/like';
+import * as modelLike from '../models/likeView';
 
 export const createPost = async ({
 	text,
@@ -21,10 +21,6 @@ export const createPost = async ({
 		if (!(result && result?.length !== 0 && result[0]?.id)) {
 			throw Error('Post not created');
 		}
-
-		const id = result[0]?.id;
-
-		await modelLike.createLike({ postId: id, count: 0 });
 
 		return { ok: true, data: {} };
 	} catch (e) {

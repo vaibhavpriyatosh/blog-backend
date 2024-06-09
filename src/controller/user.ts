@@ -173,4 +173,34 @@ const getUserByName = async (
 	}
 };
 
-export { createUser, getUser, getUserByName, updateUser, createUserFollow };
+const updateLikeView = async (
+	req: Request,
+	res: Response
+): Promise<Express.Response> => {
+	try {
+		let {
+			body: { likeViewList },
+			user: { id: userId },
+		} = req;
+		console.log({ likeViewList });
+		const result = await serviceUser.updateLikeView({ likeViewList, userId });
+
+		if (result?.ok && result?.ok) {
+			return res.status(200).json({ ok: true, data: result?.data });
+		} else {
+			throw new Error('Something went wrong');
+		}
+	} catch (error) {
+		logger.error(`user-update-like-view : controller : error : ${error}`);
+		return res.status(401).json({ ok: false, error });
+	}
+};
+
+export {
+	createUser,
+	getUser,
+	getUserByName,
+	updateUser,
+	createUserFollow,
+	updateLikeView,
+};

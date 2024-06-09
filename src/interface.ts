@@ -79,9 +79,11 @@ export interface modelupdatePostTs extends modelPostTs {
 	id: number;
 }
 
-export interface modelCreateLikeTs {
-	count: number;
+export interface modelCreateLikeViewTs {
+	userId: number;
 	postId: number;
+	isLiked: boolean;
+	isViewed: boolean;
 }
 
 export interface modelCreateFollowListTs {
@@ -91,5 +93,10 @@ export interface modelCreateFollowListTs {
 
 export interface createFollowerList {
 	userList: number[];
+	userId: number;
+}
+
+export interface viewLikeTs {
+	likeViewList: { postId: number; isLiked: boolean; isViewed: boolean }[];
 	userId: number;
 }

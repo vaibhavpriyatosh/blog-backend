@@ -1,11 +1,7 @@
 import * as configuration from '../knexDb/knexfile';
 import knex from 'knex';
 import logger from '../utils/logger';
-import {
-	modelCreateFollowListTs,
-	modelCreateLikeTs,
-	returnId,
-} from '../interface';
+import { modelCreateFollowListTs, returnId } from '../interface';
 
 const connection = knex(configuration);
 

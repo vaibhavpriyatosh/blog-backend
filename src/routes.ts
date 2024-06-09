@@ -20,6 +20,13 @@ router.post(
 	userContoller.createUserFollow
 );
 
+router.put('/user/like-view', authentication, userContoller.updateLikeView);
+
+//get user list to follow and search
+//change like to view
+
+//see if time optimise view count by maintaining user to post mapping
+
 router
 	.route('/post')
 	.post(authentication, postContoller.createPost)

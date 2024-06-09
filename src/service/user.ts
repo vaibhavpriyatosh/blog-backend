@@ -6,12 +6,14 @@ import {
 	returnId,
 	searchTextLimitTs,
 	updateUserTs,
+	viewLikeTs,
 } from '../interface';
 import { generateToken } from '../utils/jwtToken';
 import logger from '../utils/logger';
 import { hashPassword, verifyPassword } from '../utils/passwordEncription';
 import * as modelUser from '../models/user';
 import * as followList from '../models/followList';
+import * as modelLikeView from '../models/likeView';
 
 const createUser = async ({ mobile, email, password, name }: createUserTs) => {
 	try {
@@ -127,13 +129,7 @@ const createFollowLIst = async ({ userList, userId }: createFollowerList) => {
 			)
 		);
 
-		const result = await Promise.allSettled(promiseArray);
-
-		const filteredResult = result.filter(({ status }) => status === 'rejected');
-
-		if (!filteredResult || filteredResult?.length !== 0) {
-			throw new Error('Not found');
-		}
+		await Promise.allSettled(promiseArray);
 
 		return { ok: true, data: {} };
 	} catch (e) {
@@ -142,4 +138,34 @@ const createFollowLIst = async ({ userList, userId }: createFollowerList) => {
 	}
 };
 
-export { createUser, getUser, getUserByName, updateUser, createFollowLIst };
+const updateLikeView = async ({ likeViewList, userId }: viewLikeTs) => {
+	try {
+		const promiseArray: Promise<number[]>[] = [];
+		likeViewList.forEach(({ postId, isLiked, isViewed }) => {
+			promiseArray.push(
+				modelLikeView.updateLikeView({
+					postId,
+					userId,
+					isLiked: isLiked ?? false,
+					isViewed: isViewed ?? false,
+				})
+			);
+		});
+
+		await Promise.allSettled(promiseArray);
+
+		return { ok: true, data: {} };
+	} catch (e) {
+		logger.error(`user : service : create-view-like : ${e}`);
+		throw e;
+	}
+};
+
+export {
+	createUser,
+	getUser,
+	getUserByName,
+	updateUser,
+	createFollowLIst,
+	updateLikeView,
+};

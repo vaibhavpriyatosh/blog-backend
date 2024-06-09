@@ -51,3 +51,65 @@ export const updatePost = async ({
 		throw error?.constraint ?? 'Something Went Wrong!!';
 	}
 };
+
+export const getPost = async ({
+	userId,
+	searchText,
+	page,
+	pageSize,
+}: any): Promise<any> => {
+	try {
+		const offset = (page - 1) * pageSize;
+		const query = connection('post as p')
+			.leftJoin('follow_list as fl', function () {
+				this.on('p.created_by', '=', 'fl.to_user').andOn(
+					'fl.from_user',
+					'=',
+					userId
+				);
+			})
+			.orderByRaw(
+				'CASE WHEN fl.to_user IS NOT NULL THEN 0 ELSE 1 END, p.created_at DESC'
+			);
+
+		if (searchText && searchText.trim().length > 0) {
+			query
+				.whereRaw('? = ANY (p.hash_tags)', searchText)
+				.orWhere('p.text', 'like', `%${searchText}%`);
+		}
+
+		const totalCountQuery = await query
+			.clone()
+			.clearSelect()
+			.clearOrder()
+			.count('*')
+			.first();
+		const totalCount = Number(totalCountQuery?.count ?? 0);
+
+		query
+			.limit(pageSize)
+			.offset(offset)
+			.leftJoin('like_view as lv', function () {
+				this.on('p.id', '=', 'lv.post_id').andOn('lv.user_id', '=', userId);
+			})
+			.select(
+				'p.*',
+				connection.raw('COALESCE(lv.is_liked, false) as is_liked'),
+				connection.raw('COALESCE(lv.is_viewed, false) as is_viewed'),
+				connection.raw(
+					'CAST((SELECT COUNT(*) FROM like_view WHERE post_id = p.id AND is_liked = true) as INTEGER) as likeCount'
+				),
+				connection.raw(
+					'CAST((SELECT COUNT(*) FROM like_view WHERE post_id = p.id AND is_viewed = true) as INTEGER) as viewCount'
+				)
+			);
+		const posts = await query;
+		return {
+			posts,
+			totalCount,
+		};
+	} catch (error: any) {
+		logger.error(`post : model : get : ${error}`);
+		throw error?.constraint ?? 'Something Went Wrong!!';
+	}
+};

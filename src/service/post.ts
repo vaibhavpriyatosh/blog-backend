@@ -55,3 +55,19 @@ export const updatePost = async ({
 		throw e;
 	}
 };
+
+export const getPost = async ({ userId, searchText, page, pageSize }: any) => {
+	try {
+		const result = await modelPost.getPost({
+			userId,
+			searchText,
+			page,
+			pageSize,
+		});
+
+		return { ok: true, data: result };
+	} catch (e) {
+		logger.error(`user : service : get : ${e}`);
+		throw e;
+	}
+};

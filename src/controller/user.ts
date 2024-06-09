@@ -182,7 +182,7 @@ const updateLikeView = async (
 			body: { likeViewList },
 			user: { id: userId },
 		} = req;
-		console.log({ likeViewList });
+
 		const result = await serviceUser.updateLikeView({ likeViewList, userId });
 
 		if (result?.ok && result?.ok) {

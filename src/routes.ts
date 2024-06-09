@@ -30,6 +30,7 @@ router.put('/user/like-view', authentication, userContoller.updateLikeView);
 router
 	.route('/post')
 	.post(authentication, postContoller.createPost)
+	.get(authentication, postContoller.getPost)
 	.put(authentication, postContoller.updatePost);
 
 export default router;

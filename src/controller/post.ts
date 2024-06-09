@@ -99,9 +99,32 @@ const getPost = async (
 			throw new Error('Something went wrong');
 		}
 	} catch (error) {
-		logger.error(`user-update-like-view : controller : error : ${error}`);
+		logger.error(`get-post : controller : error : ${error}`);
 		return res.status(401).json({ ok: false, error });
 	}
 };
 
-export { createPost, updatePost, getPost };
+const deletePost = async (
+	req: Request,
+	res: Response
+): Promise<Express.Response> => {
+	try {
+		let {
+			params: { id },
+			user: { id: userId },
+		} = req;
+
+		const result = await servicePost.deletePost({ id, userId });
+
+		if (result?.ok && result?.ok) {
+			return res.status(200).json({ ok: true, data: result?.data });
+		} else {
+			throw new Error('Something went wrong');
+		}
+	} catch (error) {
+		logger.error(`delete-user : controller : error : ${error}`);
+		return res.status(401).json({ ok: false, error });
+	}
+};
+
+export { createPost, updatePost, getPost, deletePost };

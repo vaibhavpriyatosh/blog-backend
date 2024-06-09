@@ -68,6 +68,7 @@ export const getPost = async ({
 					userId
 				);
 			})
+			.where('is_deleted', false)
 			.orderByRaw(
 				'CASE WHEN fl.to_user IS NOT NULL THEN 0 ELSE 1 END, p.created_at DESC'
 			);
@@ -110,6 +111,21 @@ export const getPost = async ({
 		};
 	} catch (error: any) {
 		logger.error(`post : model : get : ${error}`);
+		throw error?.constraint ?? 'Something Went Wrong!!';
+	}
+};
+
+export const deletePost = async ({ id, userId }: any) => {
+	try {
+		const query = connection('post as p')
+			.update({
+				is_deleted: false,
+			})
+			.where('id', id)
+			.andWhere('created_by', userId);
+		return query;
+	} catch (error: any) {
+		logger.error(`post : model : delete : ${error}`);
 		throw error?.constraint ?? 'Something Went Wrong!!';
 	}
 };

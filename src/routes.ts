@@ -32,5 +32,6 @@ router
 	.post(authentication, postContoller.createPost)
 	.get(authentication, postContoller.getPost)
 	.put(authentication, postContoller.updatePost);
+router.delete('/post/:id', authentication, postContoller.deletePost);
 
 export default router;

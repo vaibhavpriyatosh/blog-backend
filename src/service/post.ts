@@ -71,3 +71,17 @@ export const getPost = async ({ userId, searchText, page, pageSize }: any) => {
 		throw e;
 	}
 };
+
+export const deletePost = async ({ id, userId }: any) => {
+	try {
+		const result = await modelPost.deletePost({ id, userId });
+
+		if (result !== 1) {
+			throw new Error('Not able to delete');
+		}
+		return { ok: true, data: {} };
+	} catch (e) {
+		logger.error(`user : service : get : ${e}`);
+		throw e;
+	}
+};
